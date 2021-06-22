@@ -1,0 +1,23 @@
+name: Arch Linux
+
+on: [workflow_dispatch]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Setup
+        run: |
+          useradd git
+          mkdir /home/git
+          chown git /home/git
+          pacman -Sy --noconfirm sudo git
+          echo 'git ALL=NOPASSWD: ALL' >>/etc/sudoers
+
+      - name: ssh
+        uses: mxschmitt/action-tmate@v3
+        env:
+          CI: 'true'
+        with:
+          limit-access-to-actor: true
